@@ -1,13 +1,3 @@
-/**
- * @file sol_2_a.cpp
- * @author Xenitane
- * @date 2023-12-09
- *
- * @copyright Copyright (c) 2023
- *
- * @brief read every line, remove the "Game " from the start, extract game ID, extract the info for individual sub game, check if any sub game is impossible and don't add it to the result
- */
-
 namespace std {
 	vector<string> split(const string &str, char d = ' ') {
 		vector<string> res(0);

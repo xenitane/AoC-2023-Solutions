@@ -1,13 +1,4 @@
-/**
- * @file aol_3_a.cpp
- * @author Xenitane
- * @date 2023-12-10
- *
- * @copyright Copyright (c) 2023
- *
- * @brief first read the data as a matrix and pad it with a layer of '.' on all the sides. Further traverse the matrix and on encounter with a digit, get the complete number it's part of and then look if there's an symbol adjacent to it.
- */
-void solve(int t) noexcept {
+void solve() noexcept {
 	long long				 res{};
 	std::vector<std::string> matrix(1, "");
 	for (std::string str; getline(std::cin, str);) matrix.push_back('.' + str + '.');

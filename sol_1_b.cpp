@@ -1,12 +1,3 @@
-/**
- * @file sol_1_b.cpp
- * @author Xenitane
- * @date 2023-12-09
- *
- * @copyright Copyright (c) 2023
- *
- * @brief so the basic idea is that you read line by line and find the first and last occouring digits and the english representation of it in the line and boom you have the solution from there
- */
 void solve() noexcept {
 	using namespace std::string_literals;
 	std::vector<std::string> nums{"0"s, "1"s, "2"s, "3"s, "4"s, "5"s, "6"s, "7"s, "8"s, "9"s};

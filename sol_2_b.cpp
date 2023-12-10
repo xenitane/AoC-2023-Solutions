@@ -1,12 +1,3 @@
-/**
- * @file sol_2_b.cpp
- * @author Xenitane
- * @date 2023-12-09
- *
- * @copyright Copyright (c) 2023
- *
- * @brief read every line, remove the "Game <gameid>:" from the start, extract the info for individual sub game, maintain a count for maximum amount of red, blue and green you have encountered in each sub game and add their product to the result
- */
 namespace std {
 	vector<string> split(const string &str, char d = ' ') {
 		vector<string> res(0);
@@ -25,7 +16,7 @@ namespace std {
 	}
 } // namespace std
 
-void solve(int t) noexcept {
+void solve() noexcept {
 	long long res{};
 	for (std::string str; getline(std::cin, str);) {
 		struct local_data {

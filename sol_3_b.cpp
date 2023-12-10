@@ -1,13 +1,4 @@
-/**
- * @file sol_3_b.cpp
- * @author Xenitane
- * @date 2023-12-10
- *
- * @copyright Copyright (c) 2023
- *
- * @brief first read the data as a matrix and pad it with a layer of '.' on all the sides. Further traverse the matrix and on encounter with a digit, get the complete number it's part of and then look if there's an asteris adjacent to it and then store that number in a list for that particular asteris.
- */
-void solve(int t) noexcept {
+void solve() noexcept {
 	long long								  res{};
 	std::unordered_map<int, std::vector<int>> data;
 	std::vector<std::string>				  matrix(1, "");

@@ -1,13 +1,4 @@
-/**
- * @file sol_4_a.cpp
- * @author Xenitane
- * @date 2023-12-10
- *
- * @copyright Copyright (c) 2023
- *
- * @brief read every card, remove card id, then make a set of numbers you have in that card, check how many winning number you have among them and finally add floor of 2 raised to power (count-1).
- */
-void solve(int t) noexcept {
+void solve() noexcept {
 	using namespace std::string_literals;
 	long long res{};
 	for (std::string line; getline(std::cin, line);) {
