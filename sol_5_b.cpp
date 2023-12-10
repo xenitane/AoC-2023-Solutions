@@ -48,33 +48,30 @@ std::vector<std::pair<long long, long long>> sort_and_merge(std::vector<std::pai
 }
 
 // our solver function
-void solve(int t) noexcept {
-	while (t--) {
-		// todo: write code here to solve the problem at hand
-		std::vector<std::pair<long long, long long>> seeds(0);
-		get_seeds(seeds);
+void solve() noexcept {
+	std::vector<std::pair<long long, long long>> seeds(0);
+	get_seeds(seeds);
+	consume_line();
+	for (int i = 0; i < 7; i++) {
+		seeds = sort_and_merge(seeds);
 		consume_line();
-		for (int i = 0; i < 7; i++) {
-			seeds = sort_and_merge(seeds);
-			consume_line();
-			std::map<long long, std::pair<long long, long long>> mapping;
-			for (std::string line; getline(std::cin, line);) {
-				if (line.empty()) break;
-				std::istringstream iss(line);
-				long long		   from, to, range;
-				iss >> to >> from >> range;
-				mapping.emplace(from, std::make_pair(to, range));
-			}
-			mapping.emplace(LONG_LONG_MIN, std::make_pair(LONG_LONG_MIN, 0LL));
-			mapping.emplace(LONG_LONG_MAX, std::make_pair(LONG_LONG_MAX, 0LL));
-			seeds = update_seeds(seeds, mapping);
+		std::map<long long, std::pair<long long, long long>> mapping;
+		for (std::string line; getline(std::cin, line);) {
+			if (line.empty()) break;
+			std::istringstream iss(line);
+			long long		   from, to, range;
+			iss >> to >> from >> range;
+			mapping.emplace(from, std::make_pair(to, range));
 		}
-		long long res = -1ULL ^ 1ULL << 63;
-		seeds		  = sort_and_merge(seeds);
-		while (!seeds.empty()) {
-			res = std::min(res, seeds.back().first);
-			seeds.pop_back();
-		}
-		std::cout << res << "\n";
+		mapping.emplace(LONG_LONG_MIN, std::make_pair(LONG_LONG_MIN, 0LL));
+		mapping.emplace(LONG_LONG_MAX, std::make_pair(LONG_LONG_MAX, 0LL));
+		seeds = update_seeds(seeds, mapping);
 	}
+	long long res = -1ULL ^ 1ULL << 63;
+	seeds		  = sort_and_merge(seeds);
+	while (!seeds.empty()) {
+		res = std::min(res, seeds.back().first);
+		seeds.pop_back();
+	}
+	std::cout << res << "\n";
 }
