@@ -7,7 +7,6 @@
  *
  * @brief read every line, remove the "Game <gameid>:" from the start, extract the info for individual sub game, maintain a count for maximum amount of red, blue and green you have encountered in each sub game and add their product to the result
  */
-
 namespace std {
 	vector<string> split(const string &str, char d = ' ') {
 		vector<string> res(0);

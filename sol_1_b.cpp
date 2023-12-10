@@ -7,32 +7,39 @@
  *
  * @brief so the basic idea is that you read line by line and find the first and last occouring digits and the english representation of it in the line and boom you have the solution from there
  */
-
 void solve() noexcept {
-	std::vector<std::string> nums{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
-	std::vector<std::string> nums_names{"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
-	std::vector<std::string> nums_names_rev{"orez", "eno", "owt", "eerht", "ruof", "evif", "xis", "neves", "thgie", "enin"};
+	using namespace std::string_literals;
+	std::vector<std::string> nums{"0"s, "1"s, "2"s, "3"s, "4"s, "5"s, "6"s, "7"s, "8"s, "9"s};
+	std::vector<std::string> nums_names{"zero"s, "one"s, "two"s, "three"s, "four"s, "five"s, "six"s, "seven"s, "eight"s, "nine"s};
+	std::vector<std::string> nums_names_rev{"orez"s, "eno"s, "owt"s, "eerht"s, "ruof"s, "evif"s, "xis"s, "neves"s, "thgie"s, "enin"s};
 
-	long long res{0LL};
+	long long res{};
 	for (std::string str; getline(std::cin, str);) {
 		size_t minInd = std::numeric_limits<size_t>::max();
-		int	   a	  = 0;
-		for (int i = 0; i < 10; i++) {
-			size_t zz;
-			zz = str.find(nums[i]);
-			if (zz < minInd) minInd = zz, a = i;
-			zz = str.find(nums_names[i]);
-			if (zz < minInd) minInd = zz, a = i;
+		int	   a{};
+		size_t pos{};
+		for (int i = 0; const std::string &nn : nums) {
+			pos = str.find(nn);
+			if (pos < minInd) minInd = pos, a = i;
+			i++;
+		}
+		for (int i = 0; const std::string &nn : nums_names) {
+			pos = str.find(nn);
+			if (pos < minInd) minInd = pos, a = i;
+			i++;
 		}
 		res += a * 10;
 		std::reverse(str.begin(), str.end());
 		minInd = std::numeric_limits<size_t>::max();
-		for (int i = 0; i < 10; i++) {
-			size_t zz;
-			zz = str.find(nums[i]);
-			if (zz < minInd) minInd = zz, a = i;
-			zz = str.find(nums_names_rev[i]);
-			if (zz < minInd) minInd = zz, a = i;
+		for (int i = 0; const std::string &nn : nums) {
+			pos = str.find(nn);
+			if (pos < minInd) minInd = pos, a = i;
+			i++;
+		}
+		for (int i = 0; const std::string &nn : nums_names_rev) {
+			pos = str.find(nn);
+			if (pos < minInd) minInd = pos, a = i;
+			i++;
 		}
 		res += a;
 	}
