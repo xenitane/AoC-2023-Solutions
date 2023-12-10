@@ -47,7 +47,6 @@ std::vector<std::pair<long long, long long>> sort_and_merge(std::vector<std::pai
 	return res;
 }
 
-// our solver function
 void solve() noexcept {
 	std::vector<std::pair<long long, long long>> seeds(0);
 	get_seeds(seeds);
