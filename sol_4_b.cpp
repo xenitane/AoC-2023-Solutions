@@ -1,6 +1,4 @@
 void solve() noexcept {
-
-	// todo: write code here to solve the problem at hand
 	using namespace std::string_literals;
 	long long		 res{};
 	int				 c{};

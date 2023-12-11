@@ -1,4 +1,4 @@
-void read_line(std::vector<int> &vec) {
+void read_line(std::vector<int> &vec) noexcept {
 	std::string str;
 	std::cin >> str;
 	getline(std::cin, str);
@@ -6,7 +6,7 @@ void read_line(std::vector<int> &vec) {
 	for (int num; ss >> num;) vec.emplace_back(num);
 }
 
-int helper(int a, int b) {
+int helper(int a, int b) noexcept {
 	auto zz = sqrtf64(a * a - 4 * b);
 
 	int rl = ceil((a - zz) / 2);
@@ -18,7 +18,6 @@ int helper(int a, int b) {
 	return rr - rl + 1;
 }
 
-// our solver function
 void solve() noexcept {
 	std::vector<int> times;
 	std::vector<int> distances;

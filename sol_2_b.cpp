@@ -1,5 +1,5 @@
 namespace std {
-	vector<string> split(const string &str, char d = ' ') {
+	vector<string> split(const string &str, char d = ' ') noexcept {
 		vector<string> res(0);
 		size_t		   p = 0, n = str.size();
 		string		   temp = ""s;
@@ -21,9 +21,9 @@ void solve() noexcept {
 	for (std::string str; getline(std::cin, str);) {
 		struct local_data {
 			int r, g, b;
-			local_data() : r(0), g(0), b(0) {}
-			void add(int r, int g, int b) { this->r = std::max(this->r, r), this->g = std::max(this->g, g), this->b = std::max(this->b, b); }
-			int	 fin() { return this->r * this->g * this->b; }
+			local_data() noexcept : r(0), g(0), b(0) {}
+			void add(int r, int g, int b) noexcept { this->r = std::max(this->r, r), this->g = std::max(this->g, g), this->b = std::max(this->b, b); }
+			int	 fin() const noexcept { return this->r * this->g * this->b; }
 		} data;
 		str							  = str.substr(str.find(":") + 1);
 		std::vector<std::string> pool = std::split(str, ';');

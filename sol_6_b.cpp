@@ -1,4 +1,4 @@
-void read_line(std::vector<long long> &vec) {
+void read_line(std::vector<long long> &vec) noexcept {
 	std::string str;
 	std::cin >> str;
 	getline(std::cin, str);
@@ -8,11 +8,10 @@ void read_line(std::vector<long long> &vec) {
 		std::string aa;
 		while (ss >> aa) res.append(aa);
 	}
-	std::cerr << res << "\n";
 	vec.push_back(std::stoll(res));
 }
 
-long long helper(long long a, long long b) {
+long long helper(long long a, long long b) noexcept {
 	auto zz = sqrtf64(a * a - 4 * b);
 
 	long long rl = ceil((a - zz) / 2);
@@ -24,7 +23,6 @@ long long helper(long long a, long long b) {
 	return rr - rl + 1;
 }
 
-// our solver function
 void solve() noexcept {
 	std::vector<long long> times;
 	std::vector<long long> distances;

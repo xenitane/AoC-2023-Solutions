@@ -1,16 +1,17 @@
-void get_seeds(std::vector<std::pair<long long, long long>> &sdvc) {
+#include <bits/stdc++.h>
+void get_seeds(std::vector<std::pair<long long, long long>> &sdvc) noexcept {
 	std::string str;
 	std::cin >> str;
 	getline(std::cin, str);
 	std::istringstream ss(str);
 	for (long long seed, range; ss >> seed >> range;) sdvc.emplace_back(seed, range);
 }
-void consume_line() {
+void consume_line() noexcept {
 	std::string _1;
 	getline(std::cin, _1);
 }
 
-std::vector<std::pair<long long, long long>> update_seeds(std::vector<std::pair<long long, long long>> &seeds, const std::map<long long, std::pair<long long, long long>> &mapping) {
+std::vector<std::pair<long long, long long>> update_seeds(std::vector<std::pair<long long, long long>> &seeds, const std::map<long long, std::pair<long long, long long>> &mapping) noexcept {
 	std::vector<std::pair<long long, long long>> res(0);
 	while (!seeds.empty()) {
 		long long u, v;
@@ -33,7 +34,7 @@ std::vector<std::pair<long long, long long>> update_seeds(std::vector<std::pair<
 	return res;
 }
 
-std::vector<std::pair<long long, long long>> sort_and_merge(std::vector<std::pair<long long, long long>> &vec) {
+std::vector<std::pair<long long, long long>> sort_and_merge(std::vector<std::pair<long long, long long>> &vec) noexcept {
 	std::vector<std::pair<long long, long long>> res(0);
 	std::sort(vec.rbegin(), vec.rend());
 	res.push_back(vec.back());
@@ -62,11 +63,11 @@ void solve() noexcept {
 			iss >> to >> from >> range;
 			mapping.emplace(from, std::make_pair(to, range));
 		}
-		mapping.emplace(LONG_LONG_MIN, std::make_pair(LONG_LONG_MIN, 0LL));
-		mapping.emplace(LONG_LONG_MAX, std::make_pair(LONG_LONG_MAX, 0LL));
+		mapping.emplace(0xffffffffffff, std::make_pair(0xffffffffffff, 1LL));
+		mapping.emplace(-0xffffffffffff, std::make_pair(-0xffffffffffff, 1LL));
 		seeds = update_seeds(seeds, mapping);
 	}
-	long long res = -1ULL ^ 1ULL << 63;
+	long long res = 0x7fffffffffffffff;
 	seeds		  = sort_and_merge(seeds);
 	while (!seeds.empty()) {
 		res = std::min(res, seeds.back().first);

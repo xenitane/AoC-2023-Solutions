@@ -1,5 +1,5 @@
 namespace std {
-	vector<string> split(const string &str, char d = ' ') {
+	vector<string> split(const string &str, char d = ' ') noexcept {
 		vector<string> res(0);
 		size_t		   p = 0, n = str.size();
 		string		   temp = ""s;

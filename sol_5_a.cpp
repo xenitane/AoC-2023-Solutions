@@ -1,16 +1,16 @@
-void get_seeds(std::vector<long long> &sdvc) {
+void get_seeds(std::vector<long long> &sdvc) noexcept {
 	std::string str;
 	std::cin >> str;
 	getline(std::cin, str);
 	std::istringstream ss(str);
 	for (long long seed; ss >> seed;) sdvc.push_back(seed);
 }
-void consume_line() {
+void consume_line() noexcept {
 	std::string _1;
 	getline(std::cin, _1);
 }
 
-void update_seeds(std::vector<long long> &seeds, const std::map<long long, std::pair<long long, long long>> &mapping) {
+void update_seeds(std::vector<long long> &seeds, const std::map<long long, std::pair<long long, long long>> &mapping) noexcept {
 	for (long long &seed : seeds) {
 		if (seed < mapping.begin()->first) continue;
 		auto zzz = std::prev(mapping.upper_bound(seed));
