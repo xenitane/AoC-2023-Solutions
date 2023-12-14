@@ -5,56 +5,45 @@
 
 using namespace std::string_literals;
 
-std::vector<std::string> nums{"0"s, "1"s, "2"s, "3"s, "4"s, "5"s, "6"s, "7"s, "8"s, "9"s};
-std::vector<std::string> nums_names{"zero"s, "one"s, "two"s, "three"s, "four"s, "five"s, "six"s, "seven"s, "eight"s, "nine"s};
-std::vector<std::string> nums_names_rev{"orez"s, "eno"s, "owt"s, "eerht"s, "ruof"s, "evif"s, "xis"s, "neves"s, "thgie"s, "enin"s};
+const std::vector<std::string> num_names{"\157\156\145"s, "\164\167\157"s, "\164\150\162\145\145"s, "\146\157\165\162"s, "\146\151\166\145"s, "\163\151\170"s, "\163\145\166\145\156"s, "\145\151\147\150\164"s, "\156\151\156\145"s};
+const std::vector<int>		   num_lens{3, 3, 5, 4, 4, 3, 5, 5, 4};
 
-void solve(const std::vector<std::string> &lines, const std::vector<std::vector<std::string> *> &num_data) noexcept {
+bool sub_str_present_at(const std::string &src, const std::string &sub, const size_t sp) noexcept {
+	for (size_t i{}; const char c : sub)
+		if (src[sp + (i++)] ^ c) return false;
+	return true;
+}
 
-	long long res{};
-	for (std::string line : lines) {
-		size_t minInd = std::numeric_limits<size_t>::max();
-		int	   a{};
-		size_t pos{};
-		for (int i = 0; const std::string &nn : *num_data[0]) {
-			pos = line.find(nn);
-			if (pos < minInd) minInd = pos, a = i;
-			i++;
+void solve(const std::vector<std::string> &lines) noexcept {
+
+	int res1{}, res2{};
+	for (const std::string &line : lines) {
+		int	   a{}, b{}, c{}, d{};
+		size_t len{line.size()};
+		for (size_t i{}; i < len; i++) {
+			if (isdigit(line[i])) {
+				b = line[i] - 48;
+				a = a ? a : b;
+				d = line[i] - 48;
+				c = c ? c : d;
+			}
+			for (int j{}; const std::string &num_name : num_names)
+				if ((i + num_lens[j++] <= len) && sub_str_present_at(line, num_name, i)) {
+					d = j;
+					c = c ? c : d;
+					break;
+				}
 		}
-		for (int i = 0; const std::string &nn : *num_data[1]) {
-			pos = line.find(nn);
-			if (pos < minInd) minInd = pos, a = i;
-			i++;
-		}
-		res += a * 10;
-		std::reverse(line.begin(), line.end());
-		minInd = std::numeric_limits<size_t>::max();
-		for (int i = 0; const std::string &nn : *num_data[0]) {
-			pos = line.find(nn);
-			if (pos < minInd) minInd = pos, a = i;
-			i++;
-		}
-		for (int i = 0; const std::string &nn : *num_data[2]) {
-			pos = line.find(nn);
-			if (pos < minInd) minInd = pos, a = i;
-			i++;
-		}
-		res += a;
+		res1 += a * 10 + b;
+		res2 += c * 10 + d;
 	}
-	std::cout << res << "\n";
+	std::cout << res1 << '\12' << res2 << '\12';
 }
-
-void solve_part_1(const std::vector<std::string> &lines) noexcept {
-	std::unique_ptr<std::vector<std::string>> aa(new std::vector<std::string>(0));
-	solve(lines, {&nums, aa.get(), aa.get()});
-}
-void solve_part_2(const std::vector<std::string> &lines) noexcept { solve(lines, {&nums, &nums_names, &nums_names_rev}); }
 
 void main_solver() noexcept {
 	std::vector<std::string> lines;
 	for (std::string line; getline(std::cin, line);) lines.push_back(line);
-	solve_part_1(lines);
-	solve_part_2(lines);
+	solve(lines);
 }
 
 int main() noexcept {
@@ -66,7 +55,6 @@ int main() noexcept {
 	freopen("input.txt", "r", stdin);
 	freopen("output.txt", "w", stdout);
 	freopen("error.txt", "w", stderr);
-
 	main_solver();
 
 	return 0;
