@@ -5,7 +5,7 @@
 
 #define extract_num(str, num, p, k, n)                                                                                                                                                                                                                                                                                         \
 	int num{}, k{};                                                                                                                                                                                                                                                                                                            \
-	while (p + k < n && isdigit(str[p + k])) num = num * 10 + str[p + k++] - 48;
+	while (p + k < n && isdigit(str[p + k])) num = num * 10 + str[p + k++] - 48
 
 void solve(const std::unordered_map<char, std::unordered_set<int>> &special_chars, const std::unordered_multimap<int, std::tuple<int, int, int>> &number_pos_len, const int rows, const int cols) {
 	int											 res{};

@@ -5,7 +5,7 @@
 
 #define extract_num(str, num, p, k, n)                                                                                                                                                                                                                                                                                         \
 	int num{}, k{};                                                                                                                                                                                                                                                                                                            \
-	while (p + k < n && isdigit(str[p + k])) num = num * 10 + str[p + k++] - 48;
+	while (p + k < n && isdigit(str[p + k])) num = num * 10 + str[p + k++] - 48
 
 struct card_info {
 	int						id;
