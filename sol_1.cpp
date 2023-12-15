@@ -5,7 +5,7 @@
 
 using namespace std::string_literals;
 
-const std::vector<std::string> num_names{"\157\156\145"s, "\164\167\157"s, "\164\150\162\145\145"s, "\146\157\165\162"s, "\146\151\166\145"s, "\163\151\170"s, "\163\145\166\145\156"s, "\145\151\147\150\164"s, "\156\151\156\145"s};
+const std::vector<std::string> num_names{"one"s, "two"s, "three"s, "four"s, "five"s, "six"s, "seven"s, "eight"s, "nine"s};
 const std::vector<int>		   num_lens{3, 3, 5, 4, 4, 3, 5, 5, 4};
 
 bool sub_str_present_at(const std::string &src, const std::string &sub, const size_t sp) noexcept {
@@ -21,14 +21,14 @@ void solve(const std::vector<std::string> &lines) noexcept {
 		int	   a{}, b{}, c{}, d{};
 		size_t len{line.size()};
 		for (size_t i{}; i < len; i++) {
-			if (isdigit(line[i])) {
+			if (isdigit(line[i])) [[unlikely]] {
 				b = line[i] - 48;
 				a = a ? a : b;
 				d = line[i] - 48;
 				c = c ? c : d;
 			}
 			for (int j{}; const std::string &num_name : num_names)
-				if ((i + num_lens[j++] <= len) && sub_str_present_at(line, num_name, i)) {
+				if ((i + num_lens[j++] <= len) && sub_str_present_at(line, num_name, i)) [[unlikely]] {
 					d = j;
 					c = c ? c : d;
 					break;
@@ -37,7 +37,7 @@ void solve(const std::vector<std::string> &lines) noexcept {
 		res1 += a * 10 + b;
 		res2 += c * 10 + d;
 	}
-	std::cout << res1 << '\12' << res2 << '\12';
+	std::cout << res1 << '\n' << res2 << '\n';
 }
 
 void main_solver() noexcept {
@@ -52,7 +52,7 @@ int main() noexcept {
 	std::cout.tie(0);
 	std::cerr.tie(0);
 
-	freopen("input.txt", "r", stdin);
+	freopen("input1.txt", "r", stdin);
 	freopen("output.txt", "w", stdout);
 	freopen("error.txt", "w", stderr);
 	main_solver();

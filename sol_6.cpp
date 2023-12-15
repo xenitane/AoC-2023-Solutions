@@ -3,19 +3,21 @@
 
 #include <bits/stdc++.h>
 
-long long solve(long long a, long long b) {
+long long solve(long long a, long long b) noexcept {
 	double det = sqrtf64(a * a - 4 * b);
 
 	long long rl = ceil((a - det) / 2);
-	if (rl * (a - rl) == b) rl += 1;
+	if (rl * (a - rl) == b) [[unlikely]]
+		rl += 1;
 
 	long long rr = floor((a + det) / 2);
-	if (rr * (a - rr) == b) rr -= 1;
+	if (rr * (a - rr) == b) [[unlikely]]
+		rr -= 1;
 
 	return rr - rl + 1;
 }
 
-void get_data_from_line(std::vector<int> &numbers, long long &number) {
+void get_data_from_line(std::vector<int> &numbers, long long &number) noexcept {
 	std::string line;
 	getline(std::cin, line);
 
@@ -23,8 +25,8 @@ void get_data_from_line(std::vector<int> &numbers, long long &number) {
 
 	while (p < n) {
 		if (isdigit(line[p])) {
-			number		   = number * 10 + line[p] - '0';
-			numbers.back() = numbers.back() * 10 + line[p] - '0';
+			number		   = number * 10 + line[p] - 48;
+			numbers.back() = numbers.back() * 10 + line[p] - 48;
 		} else if (numbers.empty() || numbers.back()) numbers.push_back(0);
 		p++;
 	}
@@ -45,7 +47,7 @@ void main_solver() noexcept {
 		times.pop_back();
 		distances.pop_back();
 	}
-	std::cout << res << "\n" << solve(time, distance) << "\n";
+	std::cout << res << '\n' << solve(time, distance) << '\n';
 }
 
 int main() noexcept {
@@ -54,7 +56,7 @@ int main() noexcept {
 	std::cout.tie(0);
 	std::cerr.tie(0);
 
-	freopen("input.txt", "r", stdin);
+	freopen("input6.txt", "r", stdin);
 	freopen("output.txt", "w", stdout);
 	freopen("error.txt", "w", stderr);
 	main_solver();

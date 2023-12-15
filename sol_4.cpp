@@ -5,7 +5,7 @@
 
 #define extract_num(str, num, p, k, n)                                                                                                                                                                                                                                                                                         \
 	int num{}, k{};                                                                                                                                                                                                                                                                                                            \
-	while (p + k < n && isdigit(str[p + k])) num = num * 10 + str[p + k++] - 48
+	while (p + k < n && isdigit(str[p + k])) [[likely]] num = num * 10 + str[p + k++] - 48
 
 struct card_info {
 	int						id;
@@ -13,7 +13,7 @@ struct card_info {
 	std::unordered_set<int> needed;
 };
 
-void solve(const std::vector<card_info> &cards) {
+void solve(const std::vector<card_info> &cards) noexcept {
 	int				 res1{}, res2{};
 	std::vector<int> qty(cards.size(), 1);
 	for (const card_info &card : cards) {
@@ -26,7 +26,7 @@ void solve(const std::vector<card_info> &cards) {
 		res1 += (1 << cc) / 2;
 		res2 += qty[card.id - 1];
 	}
-	std::cout << res1 << '\12' << res2 << '\12';
+	std::cout << res1 << '\n' << res2 << '\n';
 }
 
 void main_solver() noexcept {
@@ -34,7 +34,7 @@ void main_solver() noexcept {
 	for (std::string line; getline(std::cin, line);) {
 		size_t p{0}, n{line.size()};
 		while (p < n && line[p] ^ 58) {
-			if (isdigit(line[p])) {
+			if (isdigit(line[p])) [[unlikely]] {
 				extract_num(line, num, p, k, n);
 				cards.push_back(card_info{.id = num, .present = std::unordered_set<int>{}, .needed = std::unordered_set<int>{}});
 				p += k - 1;
@@ -42,7 +42,7 @@ void main_solver() noexcept {
 			p++;
 		}
 		while (line[p] ^ 124) {
-			if (isdigit(line[p])) {
+			if (isdigit(line[p])) [[unlikely]] {
 				extract_num(line, num, p, k, n);
 				cards.back().present.insert(num);
 				p += k - 1;
@@ -50,7 +50,7 @@ void main_solver() noexcept {
 			p++;
 		}
 		while (p < n) {
-			if (isdigit(line[p])) {
+			if (isdigit(line[p])) [[unlikely]] {
 				extract_num(line, num, p, k, n);
 				cards.back().needed.insert(num);
 				p += k - 1;
@@ -67,7 +67,7 @@ int main() noexcept {
 	std::cout.tie(0);
 	std::cerr.tie(0);
 
-	freopen("input.txt", "r", stdin);
+	freopen("input4.txt", "r", stdin);
 	freopen("output.txt", "w", stdout);
 	freopen("error.txt", "w", stderr);
 

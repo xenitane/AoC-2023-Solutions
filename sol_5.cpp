@@ -5,9 +5,9 @@
 
 #define extract_num(str, num, p, k, n)                                                                                                                                                                                                                                                                                         \
 	long long num{};                                                                                                                                                                                                                                                                                                           \
-	while (p + k < n && isdigit(str[p + k])) num = num * 10 + str[p + k++] - 48
+	while (p + k < n && isdigit(str[p + k])) [[likely]] num = num * 10 + str[p + k++] - 48
 
-void solve(std::pair<std::vector<long long> *, std::vector<long long> *> seeds, std::pair<std::vector<std::pair<long long, long long>> *, std::vector<std::pair<long long, long long>> *> seed_ranges, const std::vector<std::map<long long, std::pair<long long, long long>>> &mappings) {
+void solve(std::pair<std::vector<long long> *, std::vector<long long> *> seeds, std::pair<std::vector<std::pair<long long, long long>> *, std::vector<std::pair<long long, long long>> *> seed_ranges, const std::vector<std::map<long long, std::pair<long long, long long>>> &mappings) noexcept {
 	for (const auto &map : mappings) {
 		while (!seeds.first->empty()) {
 			long long seed = seeds.first->back();
@@ -42,10 +42,10 @@ void solve(std::pair<std::vector<long long> *, std::vector<long long> *> seeds, 
 	}
 	long long res{LONG_LONG_MAX};
 	for (long long &seed : *seeds.first) res = std::min(res, seed);
-	std::cout << res << "\n";
+	std::cout << res << '\n';
 	res = LONG_LONG_MAX;
 	for (auto [seed, range] : *seed_ranges.first) res = std::min(res, seed);
-	std::cout << res << "\n";
+	std::cout << res << '\n';
 }
 
 void main_solver() noexcept {
@@ -58,7 +58,7 @@ void main_solver() noexcept {
 		bool   ns{};
 		size_t p{}, n{line.size()};
 		while (p < n) {
-			if (isdigit(line[p])) {
+			if (isdigit(line[p])) [[likely]] {
 				size_t k{};
 				extract_num(line, num, p, k, n);
 				seeds->push_back(num);
@@ -72,11 +72,12 @@ void main_solver() noexcept {
 	}
 
 	while (getline(std::cin, line)) {
-		if (line.empty()) {
+		if (line.empty()) [[unlikely]] {
 			mappings.push_back(std::map<long long, std::pair<long long, long long>>{});
 			mappings.back().emplace(0xffffffffffffL, std::make_pair(0xffffffffffffL, 1LL));
 			mappings.back().emplace(-0xffffffffffffL, std::make_pair(-0xffffffffffffL, 1LL));
-		} else if (line.back() == 58) continue;
+		} else if (line.back() == 58) [[unlikely]]
+			continue;
 		else {
 			size_t p{}, n{line.size()}, k{};
 			extract_num(line, to, p, k, n);
@@ -100,7 +101,7 @@ int main() noexcept {
 	std::cout.tie(0);
 	std::cerr.tie(0);
 
-	freopen("input.txt", "r", stdin);
+	freopen("input5.txt", "r", stdin);
 	freopen("output.txt", "w", stdout);
 	freopen("error.txt", "w", stderr);
 

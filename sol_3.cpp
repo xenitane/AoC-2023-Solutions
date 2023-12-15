@@ -5,9 +5,9 @@
 
 #define extract_num(str, num, p, k, n)                                                                                                                                                                                                                                                                                         \
 	int num{}, k{};                                                                                                                                                                                                                                                                                                            \
-	while (p + k < n && isdigit(str[p + k])) num = num * 10 + str[p + k++] - 48
+	while (p + k < n && isdigit(str[p + k])) [[likely]] num = num * 10 + str[p + k++] - 48
 
-void solve(const std::unordered_map<char, std::unordered_set<int>> &special_chars, const std::unordered_multimap<int, std::tuple<int, int, int>> &number_pos_len, const int rows, const int cols) {
+void solve(const std::unordered_map<char, std::unordered_set<int>> &special_chars, const std::unordered_multimap<int, std::tuple<int, int, int>> &number_pos_len, const int rows, const int cols) noexcept {
 	int											 res{};
 	std::unordered_map<size_t, std::vector<int>> star_data;
 	for (const auto &[num, pos_len] : number_pos_len) {
@@ -24,18 +24,20 @@ void solve(const std::unordered_map<char, std::unordered_set<int>> &special_char
 		for (i = u; i < d; i++)
 			for (j = l; j < r; j++)
 				for (const auto &[sc, poss] : special_chars)
-					if (poss.contains(i * cols + j)) {
+					if (poss.contains(i * cols + j)) [[unlikely]] {
 						needed = true;
-						if (sc == 42) star_data[i * cols + j].push_back(num);
+						if (sc == '*') [[unlikely]]
+							star_data[i * cols + j].push_back(num);
 					}
 
 		res += needed ? num : 0;
 	}
-	std::cout << res << '\12';
+	std::cout << res << '\n';
 	res = 0;
 	for (const auto &[p, nums] : star_data)
-		if (nums.size() == 2) res += nums[0] * nums[1];
-	std::cout << res << '\12';
+		if (nums.size() == 2) [[unlikely]]
+			res += nums[0] * nums[1];
+	std::cout << res << '\n';
 }
 
 void main_solver() noexcept {
@@ -45,11 +47,12 @@ void main_solver() noexcept {
 	for (std::string line; getline(std::cin, line);) {
 		cols = line.length();
 		for (int i{}; i < cols; i++) {
-			if (isdigit(line[i])) {
+			if (isdigit(line[i])) [[unlikely]] {
 				extract_num(line, num, i, k, cols);
 				number_pos_len.emplace(num, std::make_tuple(rows, i, k));
 				i += k - 1;
-			} else if (line[i] ^ 46) special_chars[line[i]].emplace(rows * cols + i);
+			} else if (line[i] ^ '.') [[unlikely]]
+				special_chars[line[i]].emplace(rows * cols + i);
 		}
 		rows++;
 	}
@@ -62,7 +65,7 @@ int main() noexcept {
 	std::cout.tie(0);
 	std::cerr.tie(0);
 
-	freopen("input.txt", "r", stdin);
+	freopen("input3.txt", "r", stdin);
 	freopen("output.txt", "w", stdout);
 	freopen("error.txt", "w", stderr);
 

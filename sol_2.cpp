@@ -5,7 +5,7 @@
 
 #define extract_num(str, num, p, k, n)                                                                                                                                                                                                                                                                                         \
 	int num{}, k{};                                                                                                                                                                                                                                                                                                            \
-	while (p + k < n && isdigit(str[p + k])) num = num * 10 + str[p + k++] - 48
+	while (p + k < n && isdigit(str[p + k])) [[likely]] num = num * 10 + str[p + k++] - 48
 
 struct game_data {
 	int game_id;
@@ -29,15 +29,15 @@ void solve(const std::vector<game_data> &games) noexcept {
 		res1 += f ? 0 : game.game_id;
 		res2 += gi_fin.red * gi_fin.green * gi_fin.blue;
 	}
-	std::cout << res1 << '\12' << res2 << '\12';
+	std::cout << res1 << '\n' << res2 << '\n';
 }
 
 void main_solver() noexcept {
 	std::vector<game_data> games(0);
 	for (std::string line; getline(std::cin, line);) {
 		size_t p{}, n{line.size()};
-		while (p < n && line[p] ^ 58) {
-			if (isdigit(line[p])) {
+		while (p < n && line[p] ^ ':') {
+			if (isdigit(line[p])) [[unlikely]] {
 				extract_num(line, num, p, k, n);
 				p += k - 1;
 				games.push_back(game_data{.game_id = num, .games = std::vector<game_data::game_info>{}});
@@ -46,9 +46,9 @@ void main_solver() noexcept {
 		}
 		while (p < n) {
 			games.back().games.push_back(game_data::game_info{0, 0, 0});
-			while (p < n && line[p] != 59) {
-				while (p < n && line[p] != 44 && line[p] != 59) {
-					if (isdigit(line[p])) {
+			while (p < n && line[p] ^ ';') {
+				while (p < n && line[p] ^ ',' && line[p] ^ ';') {
+					if (isdigit(line[p])) [[unlikely]] {
 						extract_num(line, num, p, k, n);
 						p += k;
 						switch (line[p + 1]) {
@@ -59,7 +59,7 @@ void main_solver() noexcept {
 					}
 					p++;
 				}
-				if (line[p] == 44) p++;
+				if (line[p] == ',') p++;
 			}
 			p++;
 		}
@@ -73,7 +73,7 @@ int main() noexcept {
 	std::cout.tie(0);
 	std::cerr.tie(0);
 
-	freopen("input.txt", "r", stdin);
+	freopen("input2.txt", "r", stdin);
 	freopen("output.txt", "w", stdout);
 	freopen("error.txt", "w", stderr);
 
