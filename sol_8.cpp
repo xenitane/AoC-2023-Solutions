@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 
-long long gcd(long long a, long long b) {
+long long gcd(long long a, long long b) noexcept {
 	while (b) {
 		a %= b;
 		std::swap(a, b);
@@ -8,7 +8,7 @@ long long gcd(long long a, long long b) {
 	return a;
 }
 
-int get_distance(int start, const std::unordered_map<int, std::unique_ptr<int>> &targets, const std::vector<bool> &steps) {
+int get_distance(int start, const std::unordered_map<int, std::unique_ptr<int>> &targets, const std::vector<bool> &steps) noexcept {
 	size_t p{1}, n{steps.size()};
 	start = targets.at(start).get()[steps[0]];
 	while ((start & 0xff) ^ 25) start = targets.at(start).get()[steps[p++ % n]];
@@ -38,10 +38,11 @@ void main_solver() noexcept {
 	}
 
 	for (auto ftr = starts.begin(); ftr != starts.end(); ftr++) ftr->second = get_distance(ftr->first, targets, steps);
-	std::cout << starts[0] << "\n";
+
+	std::cout << starts[0] << '\n';
 	long long res{1};
 	for (auto &[a, b] : starts) res = res * b / gcd(res, b);
-	std::cout << res << "\n";
+	std::cout << res << '\n';
 }
 
 int main() noexcept {
