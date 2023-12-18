@@ -1,3 +1,6 @@
+#pragma GCC optimize("O3,Os,unroll-loops")
+#pragma GCC target("avx2,sse4.2,popcnt,lzcnt,abm,bmi,bmi2")
+
 #include <bits/stdc++.h>
 
 #define extract_num(str, num, p, k, n)                                                                                                                                                                                                                                                                                         \

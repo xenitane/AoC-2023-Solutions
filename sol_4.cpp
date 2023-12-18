@@ -41,7 +41,7 @@ void main_solver() noexcept {
 			}
 			p++;
 		}
-		while (line[p] ^ 124) {
+		while (line[p] ^ '|') {
 			if (isdigit(line[p])) [[unlikely]] {
 				extract_num(line, num, p, k, n);
 				cards.back().present.insert(num);
