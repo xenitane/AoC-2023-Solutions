@@ -7,7 +7,10 @@
 	long long num{};                                                                                                                                                                                                                                                                                                           \
 	while (p + k < n && isdigit(str[p + k])) [[likely]] num = num * 10 + str[p + k++] - 48
 
-void solve(std::pair<std::vector<long long> *, std::vector<long long> *> seeds, std::pair<std::vector<std::pair<long long, long long>> *, std::vector<std::pair<long long, long long>> *> seed_ranges, const std::vector<std::map<long long, std::pair<long long, long long>>> &mappings) noexcept {
+template <typename T> using prtt = std::pair<T, T>;
+using pll						 = prtt<long long>;
+
+void solve(prtt<std::vector<long long> *> seeds, prtt<std::vector<pll> *> seed_ranges, const std::vector<std::map<long long, pll>> &mappings) noexcept {
 	for (const auto &map : mappings) {
 		while (!seeds.first->empty()) {
 			long long seed = seeds.first->back();
@@ -49,16 +52,21 @@ void solve(std::pair<std::vector<long long> *, std::vector<long long> *> seeds, 
 }
 
 void main_solver() noexcept {
-	std::vector<long long>										   *seeds = new std::vector<long long>(0), *seeds_o = new std::vector<long long>(0);
-	std::vector<std::pair<long long, long long>>					 *seed_ranges = new std::vector<std::pair<long long, long long>>(0), *seed_ranges_o = new std::vector<std::pair<long long, long long>>(0);
-	std::vector<std::map<long long, std::pair<long long, long long>>> mappings(0);
-	std::string														  line;
+
+	std::vector<long long> *seeds{new std::vector<long long>(0)};
+	std::vector<long long> *seeds_o{new std::vector<long long>(0)};
+
+	std::vector<pll> *seed_ranges{new std::vector<pll>(0)};
+	std::vector<pll> *seed_ranges_o{new std::vector<pll>(0)};
+
+	std::vector<std::map<long long, pll>> mappings(0);
+	std::string							  line;
 	getline(std::cin, line);
 	{
 		bool   ns{};
 		size_t p{}, n{line.size()};
 		while (p < n) {
-			if (isdigit(line[p])) [[likely]] {
+			if (isdigit(line[p])) [[unlikely]] {
 				size_t k{};
 				extract_num(line, num, p, k, n);
 				seeds->push_back(num);
@@ -73,10 +81,10 @@ void main_solver() noexcept {
 
 	while (getline(std::cin, line)) {
 		if (line.empty()) [[unlikely]] {
-			mappings.push_back(std::map<long long, std::pair<long long, long long>>{});
-			mappings.back().emplace(0xffffffffffffL, std::make_pair(0xffffffffffffL, 1LL));
-			mappings.back().emplace(-0xffffffffffffL, std::make_pair(-0xffffffffffffL, 1LL));
-		} else if (line.back() == 58) [[unlikely]]
+			mappings.push_back(std::map<long long, pll>{});
+			mappings.back().emplace(0xffffffffffffL, pll{0xffffffffffffL, 1LL});
+			mappings.back().emplace(-0xffffffffffffL, pll{-0xffffffffffffL, 1LL});
+		} else if (line.back() == ':') [[unlikely]]
 			continue;
 		else {
 			size_t p{}, n{line.size()}, k{};
@@ -85,10 +93,10 @@ void main_solver() noexcept {
 			extract_num(line, from, p, k, n);
 			k++;
 			extract_num(line, range, p, k, n);
-			mappings.back()[from] = std::make_pair(to, range);
+			mappings.back().emplace(from, pll{to, range});
 		}
 	}
-	solve(std::make_pair(seeds, seeds_o), std::make_pair(seed_ranges, seed_ranges_o), mappings);
+	solve({seeds, seeds_o}, {seed_ranges, seed_ranges_o}, mappings);
 	delete seeds;
 	delete seed_ranges;
 	delete seeds_o;

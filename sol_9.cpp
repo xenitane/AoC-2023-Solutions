@@ -18,37 +18,33 @@ bool any_non_zero(const std::vector<long long> &vec) {
 void main_solver() noexcept {
 	long long resl{}, resr{};
 	for (std::string line; getline(std::cin, line);) {
-		std::vector<std::vector<long long>> stck;
-		stck.emplace_back(0);
+		std::vector<std::vector<long long>> stck(0);
+		stck.emplace_back(1, 0);
 		size_t p{}, n{line.size()};
-		int	   num{};
 		bool   sign{};
 		while (p < n) {
 			if (line[p] == '-') [[unlikely]]
 				sign = true;
-			else if (isdigit(line[p])) {
-				extract_num(line, num, p, k, n);
+			else if (isdigit(line[p])) [[unlikely]] {
+				extract_num(line, stck.back().back(), p, k, n);
+				if (sign) stck.back().back() *= -1;
 			} else {
-				stck.back().push_back(num * (sign ? -1 : 1));
-				num	 = 0;
+				stck.back().push_back(0);
 				sign = false;
 			}
 			p++;
 		}
 		p = 0;
+		n = stck.back().size();
 		while (any_non_zero(stck.back())) {
-			n = stck.back().size();
-			stck.emplace_back(0);
-			for (size_t i{1}; i < n; i++) stck.back().push_back(stck[p][i] - stck[p][i - 1]);
+			stck.emplace_back(--n);
+			for (size_t i{}; i < n; i++) stck[p + 1][i] = stck[p][i + 1] - stck[p][i];
 			p++;
 		}
 		long long tl{}, tr{};
-		bool	  f{};
 		while (!stck.empty()) {
 			tr = stck.back().back() + tr;
 			tl = stck.back()[0] - tl;
-			f  = !f;
-			stck.back().clear();
 			stck.pop_back();
 		}
 		resr += tr;

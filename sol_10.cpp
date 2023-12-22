@@ -3,13 +3,16 @@
 
 #include <bits/stdc++.h>
 
-void bfs(std::vector<std::vector<char>> &matrix, size_t x, size_t y, const int n, const int m) noexcept {
+using tube = std::bitset<4>;
+
+void bfs(std::vector<std::vector<tube>> &matrix, size_t x, size_t y, const int n, const int m) noexcept {
 	std::deque<std::pair<int, int>> dq;
 	dq.emplace_back(x, y);
 	while (!dq.empty()) {
 		auto [u, v] = dq.front();
 		dq.pop_front();
-		if (u < 0 || v < 0 || u == n || v == m || matrix[u][v]) continue;
+		if (u < 0 || v < 0 || u == n || v == m || matrix[u][v].test(0)) [[likely]]
+			continue;
 
 		matrix[u][v] = 1;
 		dq.emplace_back(u - 1, v - 1);
@@ -23,30 +26,23 @@ void bfs(std::vector<std::vector<char>> &matrix, size_t x, size_t y, const int n
 	}
 }
 
-#define RIGHT 1
-#define LEFT  2
-#define UP	  4
-#define DOWN  8
+enum move_name { RIGHT, LEFT, UP, DOWN };
 
 void main_solver() noexcept {
-	std::vector<std::vector<char>> matrix;
+	std::vector<std::vector<tube>> matrix;
 	size_t						   start_x{}, start_y{};
 	for (std::string line; getline(std::cin, line);) {
 		matrix.emplace_back(0);
 		for (char c : line) {
-			switch (c) {
-			case '.': matrix.back().emplace_back(0); break;
-			case '-': matrix.back().emplace_back(LEFT | RIGHT); break;
-			case '|': matrix.back().emplace_back(UP | DOWN); break;
-			case 'L': matrix.back().emplace_back(UP | RIGHT); break;
-			case 'F': matrix.back().emplace_back(DOWN | RIGHT); break;
-			case '7': matrix.back().emplace_back(DOWN | LEFT); break;
-			case 'J': matrix.back().emplace_back(UP | LEFT); break;
-			case 'S':
-				matrix.back().emplace_back(0);
+			matrix.back().emplace_back(0);
+			if (c == 'S') [[unlikely]] {
 				start_x = matrix.size() - 1;
 				start_y = matrix.back().size() - 1;
-				break;
+			} else {
+				if (c == '-' || c == 'L' || c == 'F') matrix.back().back().set(RIGHT);
+				if (c == '-' || c == 'J' || c == '7') matrix.back().back().set(LEFT);
+				if (c == '|' || c == 'L' || c == 'J') matrix.back().back().set(UP);
+				if (c == '|' || c == 'F' || c == '7') matrix.back().back().set(DOWN);
 			}
 			matrix.back().emplace_back(0);
 		}
@@ -56,10 +52,10 @@ void main_solver() noexcept {
 	matrix.pop_back();
 	size_t n{matrix.size()}, m{matrix[0].size()};
 
-	if (start_y > 0 && matrix[start_x][start_y - 2] & RIGHT) { matrix[start_x][start_y] |= LEFT; }
-	if (start_y < m - 1 && matrix[start_x][start_y + 2] & LEFT) { matrix[start_x][start_y] |= RIGHT; }
-	if (start_x < n - 1 && matrix[start_x + 2][start_y] & UP) { matrix[start_x][start_y] |= DOWN; }
-	if (start_x > 0 && matrix[start_x - 2][start_y] & DOWN) { matrix[start_x][start_y] |= UP; }
+	if (start_y > 0 && matrix[start_x][start_y - 2].test(RIGHT)) matrix[start_x][start_y].set(LEFT);
+	if (start_y < m - 1 && matrix[start_x][start_y + 2].test(LEFT)) matrix[start_x][start_y].set(RIGHT);
+	if (start_x < n - 1 && matrix[start_x + 2][start_y].test(UP)) matrix[start_x][start_y].set(DOWN);
+	if (start_x > 0 && matrix[start_x - 2][start_y].test(DOWN)) matrix[start_x][start_y].set(UP);
 	int									  res{-1};
 	std::deque<std::pair<size_t, size_t>> dq;
 	dq.emplace_back(start_x, start_y);
@@ -75,19 +71,19 @@ void main_solver() noexcept {
 			if (vis[u][v]) continue;
 			f		  = true;
 			vis[u][v] = true;
-			if (matrix[u][v] & RIGHT && v < m - 2) {
+			if (matrix[u][v].test(RIGHT) && v < m - 2) {
 				dq.emplace_back(u, v + 2);
 				matrix[u][v + 1] = 15;
 			}
-			if (matrix[u][v] & LEFT && v > 0) {
+			if (matrix[u][v].test(LEFT) && v > 0) {
 				dq.emplace_back(u, v - 2);
 				matrix[u][v - 1] = 15;
 			}
-			if (matrix[u][v] & UP && u > 0) {
+			if (matrix[u][v].test(UP) && u > 0) {
 				dq.emplace_back(u - 2, v);
 				matrix[u - 1][v] = 15;
 			}
-			if (matrix[u][v] & DOWN && u < n - 2) {
+			if (matrix[u][v].test(DOWN) && u < n - 2) {
 				dq.emplace_back(u + 2, v);
 				matrix[u + 1][v] = 15;
 			}
@@ -97,20 +93,19 @@ void main_solver() noexcept {
 	}
 	std::cout << res << '\n';
 	for (size_t i = 0; i < n; i++)
-		for (size_t j = 0; j < m; j++) matrix[i][j] /= 15;
+		for (size_t j = 0; j < m; j++) matrix[i][j] = matrix[i][j].all() ? 1 : 0;
 
 	res = 0;
 	for (size_t i{}; i < m; i++) {
-		if (!matrix[0][i]) bfs(matrix, 0, i, n, m);
-		if (!matrix[n - 1][i]) bfs(matrix, n - 1, i, n, m);
+		bfs(matrix, 0, i, n, m);
+		bfs(matrix, n - 1, i, n, m);
 	}
 	for (size_t i{}; i < n; i++) {
-		if (!matrix[i][0]) bfs(matrix, i, 0, n, m);
-		if (!matrix[i][m - 1]) bfs(matrix, i, m - 1, n, m);
+		bfs(matrix, i, 0, n, m);
+		bfs(matrix, i, m - 1, n, m);
 	}
-	for (size_t i{}; i < n; i++)
-		for (size_t j{}; j < m; j++)
-			if (!(i & 1) && !(j & 1)) res += !matrix[i][j];
+	for (size_t i{}; i < n; i += 2)
+		for (size_t j{}; j < m; j += 2) res += !matrix[i][j].test(0);
 
 	std::cout << res << '\n';
 }

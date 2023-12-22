@@ -16,12 +16,22 @@ int card_denom(char c) noexcept {
 	return 1;
 }
 
-int frq[15]{};
+void set_card_rank(const std::vector<int> &frq, int &rank) noexcept {
+	if (frq[14] == 5) rank = 6;
+	else if (frq[14] == 4) rank = 5;
+	else if (frq[14] == 3) rank = frq[13] == 2 ? 4 : 3;
+	else if (frq[14] == 2) rank = frq[13] == 2 ? 2 : 1;
+}
 
-std::tuple<int, int, int> make_card(const std::string &line) noexcept {
-	int card_num{}, bet{}, rank{}, den{};
-	for (int &i : frq) i = 0;
-	size_t p{}, n{line.size()};
+struct hand_data {
+	int	 rank, cards, bet;
+	bool operator<(const hand_data &h) noexcept { return this->rank < h.rank || (this->rank == h.rank && (this->cards < h.cards || (this->cards == h.cards && this->bet < h.bet))); }
+};
+
+hand_data make_card(const std::string &line) noexcept {
+	int				 card_num{}, bet{}, rank{}, den{};
+	std::vector<int> frq(15, 0);
+	size_t			 p{}, n{line.size()};
 	while (line[p] ^ ' ') {
 		den		 = card_denom(line[p]);
 		card_num = (card_num << 4) | den;
@@ -34,19 +44,15 @@ std::tuple<int, int, int> make_card(const std::string &line) noexcept {
 		p++;
 	}
 
-	std::sort(frq, frq + 15);
-	if (frq[14] == 5) rank = 6;
-	else if (frq[14] == 4) rank = 5;
-	else if (frq[14] == 3) rank = frq[13] == 2 ? 4 : 3;
-	else if (frq[14] == 2) rank = frq[13] == 2 ? 2 : 1;
-
-	return std::make_tuple(rank, card_num, bet);
+	std::sort(frq.begin(), frq.end());
+	set_card_rank(frq, rank);
+	return hand_data{rank, card_num, bet};
 }
 
-void modify_cards(std::vector<std::tuple<int, int, int>> &cards) noexcept {
+void modify_cards(std::vector<hand_data> &cards) noexcept {
 	for (auto &[rank, card, bet] : cards) {
-		for (int &i : frq) i = 0;
-		int i{20};
+		std::vector<int> frq(15, 0);
+		int				 i{20};
 
 		while (i) {
 			i -= 4;
@@ -57,29 +63,26 @@ void modify_cards(std::vector<std::tuple<int, int, int>> &cards) noexcept {
 		if (!frq[1]) [[likely]]
 			continue;
 
-		std::sort(frq + 2, frq + 15);
+		std::sort(frq.begin() + 2, frq.end());
 		frq[14] += frq[1];
-		if (frq[14] == 5) rank = 6;
-		else if (frq[14] == 4) rank = 5;
-		else if (frq[14] == 3) rank = frq[13] == 2 ? 4 : 3;
-		else if (frq[14] == 2) rank = frq[13] == 2 ? 2 : 1;
+		set_card_rank(frq, rank);
 	}
 }
 
 void main_solver() noexcept {
-	std::vector<std::tuple<int, int, int>> cards(0);
-	size_t								   n{};
-	long long							   res{};
+	std::vector<hand_data> cards(0);
+	size_t				   n{};
+	long long			   res{};
 	for (std::string line; getline(std::cin, line); n++) cards.push_back(make_card(line));
 
 	std::sort(cards.begin(), cards.end());
-	for (size_t i{}; i < n; i++) res += (i + 1) * std::get<2>(cards[i]);
+	for (size_t i{}; i < n; i++) res += (i + 1) * cards[i].bet;
 	std::cout << res << '\n';
 
 	res = 0;
 	modify_cards(cards);
 	std::sort(cards.begin(), cards.end());
-	for (size_t i{}; i < n; i++) res += (i + 1) * std::get<2>(cards[i]);
+	for (size_t i{}; i < n; i++) res += (i + 1) * cards[i].bet;
 	std::cout << res << '\n';
 }
 

@@ -5,12 +5,15 @@
 
 #define extract_num(str, num, p, k, n)                                                                                                                                                                                                                                                                                         \
 	int num{}, k{};                                                                                                                                                                                                                                                                                                            \
-	while (p + k < n && isdigit(str[p + k])) [[likely]] num = num * 10 + str[p + k++] - 48
+	while (p + k < n && isdigit(str[p + k])) [[likely]] num = num * 10 + str[p + k++] - 48;                                                                                                                                                                                                                                    \
+	p += k - 1
 
 struct game_data {
 	int game_id;
 	struct game_info {
-		int red, green, blue;
+		int red;
+		int green;
+		int blue;
 	};
 	std::vector<game_info> games;
 };
@@ -18,16 +21,18 @@ struct game_data {
 void solve(const std::vector<game_data> &games) noexcept {
 	int res1{}, res2{};
 	for (const game_data &game : games) {
-		bool				 f		= false;
-		game_data::game_info gi_fin = {.red = 0, .green = 0, .blue = 0};
+		bool f = false;
+		int	 fr{}, fg{}, fb{};
+
 		for (const game_data::game_info &gi : game.games) {
-			if (gi.red > 12 || gi.green > 13 || gi.blue > 14) f = true;
-			gi_fin.red	 = std::max(gi_fin.red, gi.red);
-			gi_fin.green = std::max(gi_fin.green, gi.green);
-			gi_fin.blue	 = std::max(gi_fin.blue, gi.blue);
+			auto [cr, cg, cb] = gi;
+			if (cr > 12 || cg > 13 || cb > 14) f = true;
+			fr = std::max(fr, cr);
+			fg = std::max(fg, cg);
+			fb = std::max(fb, cb);
 		}
 		res1 += f ? 0 : game.game_id;
-		res2 += gi_fin.red * gi_fin.green * gi_fin.blue;
+		res2 += fr * fg * fb;
 	}
 	std::cout << res1 << '\n' << res2 << '\n';
 }
@@ -39,22 +44,20 @@ void main_solver() noexcept {
 		while (p < n && line[p] ^ ':') {
 			if (isdigit(line[p])) [[unlikely]] {
 				extract_num(line, num, p, k, n);
-				p += k - 1;
 				games.push_back(game_data{.game_id = num, .games = std::vector<game_data::game_info>{}});
 			}
 			p++;
 		}
 		while (p < n) {
-			games.back().games.push_back(game_data::game_info{0, 0, 0});
+			int r{}, g{}, b{};
 			while (p < n && line[p] ^ ';') {
 				while (p < n && line[p] ^ ',' && line[p] ^ ';') {
 					if (isdigit(line[p])) [[unlikely]] {
 						extract_num(line, num, p, k, n);
-						p += k;
-						switch (line[p + 1]) {
-						case 0x72: games.back().games.back().red = num; break;
-						case 0x67: games.back().games.back().green = num; break;
-						case 0x62: games.back().games.back().blue = num; break;
+						switch (line[p + 2]) {
+						case 'r': r = num; break;
+						case 'g': g = num; break;
+						case 'b': b = num; break;
 						}
 					}
 					p++;
@@ -62,6 +65,7 @@ void main_solver() noexcept {
 				if (line[p] == ',') p++;
 			}
 			p++;
+			games.back().games.push_back(game_data::game_info{r, g, b});
 		}
 	}
 	solve(games);

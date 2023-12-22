@@ -6,7 +6,7 @@
 #define extract_num(str, num, p, k, n)                                                                                                                                                                                                                                                                                         \
 	int num{}, k{};                                                                                                                                                                                                                                                                                                            \
 	while (p + k < n && isdigit(str[p + k])) [[likely]] num = num * 10 + str[p + k++] - 48;                                                                                                                                                                                                                                    \
-	p += k
+	p += k - 1
 
 size_t X{}, Y{}, Z{};
 
@@ -15,15 +15,14 @@ template <typename T> using _2dv = _1dv<_1dv<T>>;
 template <typename T> using _3dv = _1dv<_2dv<T>>;
 template <typename T> using _4dv = _1dv<_3dv<T>>;
 
-enum symbols : char { dot = '.', hash = '#', ques = '?' };
+enum symbols : char { dot, hash, ques };
 
 long long make_dp(size_t p, size_t np, size_t q, int currnet, _4dv<long long> &dp, const std::string &str, const std::vector<size_t> &nums) noexcept {
-	if (p <= X && np <= Y && q <= X) {
-		if (dp[p][np][q][currnet] == -1) {
-
-			if (p == X) {
+	if (p <= X && np <= Y && q <= X) [[unlikely]] {
+		if (dp[p][np][q][currnet] == -1) [[likely]] {
+			if (p == X) [[unlikely]] {
 				dp[p][np][q][currnet] = (np == Y) && !q;
-			} else if (np == Y) {
+			} else if (np == Y) [[unlikely]] {
 				dp[p][np][q][currnet] = (str[p] == hash) ? 0 : make_dp(p + 1, np, 0, 0, dp, str, nums);
 			} else {
 				switch (str[p]) {
@@ -64,12 +63,15 @@ void main_solver() noexcept {
 	long long res1{}, res2{};
 	for (std::string line; getline(std::cin, line);) {
 		std::string data{line.substr(0, line.find(' '))};
-		line = line.substr(line.find(' ') + 1);
+		std::transform(data.begin(), data.end(), data.begin(), [](char c) noexcept -> char { return (c == '.' ? 0 : (c == '#' ? 1 : 2)); });
+		line = line.substr(line.find(' '));
 		size_t				p{}, n{line.size()};
 		std::vector<size_t> lens(0);
 		while (p < n) {
-			extract_num(line, num, p, k, n);
-			lens.push_back(num);
+			if (isdigit(line[p])) [[unlikely]] {
+				extract_num(line, num, p, k, n);
+				lens.push_back(num);
+			}
 			p++;
 		}
 

@@ -5,7 +5,8 @@
 
 #define extract_num(str, num, p, k, n)                                                                                                                                                                                                                                                                                         \
 	int num{}, k{};                                                                                                                                                                                                                                                                                                            \
-	while (p + k < n && isdigit(str[p + k])) [[likely]] num = num * 10 + str[p + k++] - 48
+	while (p + k < n && isdigit(str[p + k])) [[likely]] num = num * 10 + str[p + k++] - 48;                                                                                                                                                                                                                                    \
+	p += k - 1
 
 struct card_info {
 	int						id;
@@ -29,34 +30,29 @@ void solve(const std::vector<card_info> &cards) noexcept {
 	std::cout << res1 << '\n' << res2 << '\n';
 }
 
+void extract_nums(const std::string &str, std::unordered_set<int> &st, size_t &p, const char d, const size_t n) noexcept {
+	while (p < n && str[p] ^ d) {
+		if (isdigit(str[p])) [[unlikely]] {
+			extract_num(str, num, p, k, n);
+			st.insert(num);
+		}
+		p++;
+	}
+}
+
 void main_solver() noexcept {
 	std::vector<card_info> cards{};
 	for (std::string line; getline(std::cin, line);) {
 		size_t p{0}, n{line.size()};
-		while (p < n && line[p] ^ 58) {
+		while (p < n && line[p] ^ ':') {
 			if (isdigit(line[p])) [[unlikely]] {
 				extract_num(line, num, p, k, n);
 				cards.push_back(card_info{.id = num, .present = std::unordered_set<int>{}, .needed = std::unordered_set<int>{}});
-				p += k - 1;
 			}
 			p++;
 		}
-		while (line[p] ^ '|') {
-			if (isdigit(line[p])) [[unlikely]] {
-				extract_num(line, num, p, k, n);
-				cards.back().present.insert(num);
-				p += k - 1;
-			}
-			p++;
-		}
-		while (p < n) {
-			if (isdigit(line[p])) [[unlikely]] {
-				extract_num(line, num, p, k, n);
-				cards.back().needed.insert(num);
-				p += k - 1;
-			}
-			p++;
-		}
+		extract_nums(line, cards.back().present, p, '|', n);
+		extract_nums(line, cards.back().needed, p, '\n', n);
 	}
 	solve(cards);
 }

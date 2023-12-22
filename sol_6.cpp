@@ -24,7 +24,7 @@ void get_data_from_line(std::vector<int> &numbers, long long &number) noexcept {
 	size_t p{line.find(':') + 1}, n{line.size()};
 
 	while (p < n) {
-		if (isdigit(line[p])) {
+		if (isdigit(line[p])) [[unlikely]] {
 			number		   = number * 10 + line[p] - 48;
 			numbers.back() = numbers.back() * 10 + line[p] - 48;
 		} else if (numbers.empty() || numbers.back()) numbers.push_back(0);

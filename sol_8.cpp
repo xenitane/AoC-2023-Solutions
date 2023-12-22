@@ -23,7 +23,7 @@ void main_solver() noexcept {
 	{
 		std::string line;
 		getline(std::cin, line);
-		for (char c : line) steps.push_back(c ^ 'L');
+		for (char c : line) steps.push_back(c != 'L');
 		getline(std::cin, line);
 	}
 
@@ -39,8 +39,7 @@ void main_solver() noexcept {
 			starts.emplace(from, 0);
 		targets.emplace(from, new int[2]{left_to, right_to});
 	}
-
-	for (auto ftr = starts.begin(); ftr != starts.end(); ftr++) ftr->second = get_distance(ftr->first, targets, steps);
+	for (auto &[a, b] : starts) b = get_distance(a, targets, steps);
 
 	std::cout << starts[0] << '\n';
 	long long res{1};

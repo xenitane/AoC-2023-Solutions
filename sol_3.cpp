@@ -7,12 +7,15 @@
 	int num{}, k{};                                                                                                                                                                                                                                                                                                            \
 	while (p + k < n && isdigit(str[p + k])) [[likely]] num = num * 10 + str[p + k++] - 48
 
-void solve(const std::unordered_map<char, std::unordered_set<int>> &special_chars, const std::unordered_multimap<int, std::tuple<int, int, int>> &number_pos_len, const int rows, const int cols) noexcept {
+struct pos_len {
+	int x, y, l;
+};
+
+void solve(const std::unordered_map<char, std::unordered_set<int>> &special_chars, const std::unordered_multimap<int, pos_len> &number_pos_len, const int rows, const int cols) noexcept {
 	int											 res{};
 	std::unordered_map<size_t, std::vector<int>> star_data;
 	for (const auto &[num, pos_len] : number_pos_len) {
-		int i{}, j{}, k{};
-		std::tie(i, j, k) = pos_len;
+		auto [i, j, k] = pos_len;
 
 		int u = std::max(0, i - 1);
 		int d = std::min(rows, i + 2);
@@ -41,15 +44,15 @@ void solve(const std::unordered_map<char, std::unordered_set<int>> &special_char
 }
 
 void main_solver() noexcept {
-	std::unordered_map<char, std::unordered_set<int>>		special_chars;
-	std::unordered_multimap<int, std::tuple<int, int, int>> number_pos_len;
-	int														rows{}, cols{};
+	std::unordered_map<char, std::unordered_set<int>> special_chars;
+	std::unordered_multimap<int, pos_len>			  number_pos_len;
+	int												  rows{}, cols{};
 	for (std::string line; getline(std::cin, line);) {
 		cols = line.length();
 		for (int i{}; i < cols; i++) {
 			if (isdigit(line[i])) [[unlikely]] {
 				extract_num(line, num, i, k, cols);
-				number_pos_len.emplace(num, std::make_tuple(rows, i, k));
+				number_pos_len.emplace(num, pos_len{rows, i, k});
 				i += k - 1;
 			} else if (line[i] ^ '.') [[unlikely]]
 				special_chars[line[i]].emplace(rows * cols + i);
